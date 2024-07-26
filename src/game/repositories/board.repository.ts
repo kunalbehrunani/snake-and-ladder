@@ -84,7 +84,7 @@ export class BoardRepository {
       } else if (this._board[i].getSnake()) {
         identifier = `SNAKE ${this._board[i].getSnake().head} -> ${this._board[i].getSnake().tail}`;
       } else if (this._board[i].getPlayer()) {
-        identifier = `PLAYER ${this._board[i].getPlayer().userName}`;
+        identifier = `PLAYER ${this._board[i].getPlayer().firstName} ${this._board[i].getPlayer().lastName} (${this._board[i].getPlayer().userName})`;
       }
 
       if (identifier) {

@@ -51,12 +51,12 @@ export class GameService {
 
     while (gameplay) {
       totalTurns += 1;
-      this.logOutcome(`Turn #${totalTurns}`);
+      this.log(`Turn #${totalTurns}`);
 
       const currPlayer = this.playerRepository.getNextPlayer();
       const oldPosition = currPlayer.position;
       let diceValue = this.rollDice();
-      this.logOutcome(
+      this.log(
         `____Player: ${currPlayer.userName}\n____Old Position: ${oldPosition}\n____Dice Value: ${diceValue}`,
       );
 
@@ -64,25 +64,25 @@ export class GameService {
        * @description A player needs to get a diceValue of 6 & above in order to enter the gameplay
        */
       if (oldPosition === 0 && diceValue < 6) {
-        this.logOutcome(`____[Player yet to enter gameplay]`);
-        this.logOutcome(`____Final Position: ${0}`);
+        this.log(`____[Player yet to enter gameplay]`);
+        this.log(`____Final Position: ${0}`);
         continue;
       } else if (oldPosition === 0 && diceValue >= 6) {
-        this.logOutcome(`____[Player enters gameplay]`);
-        this.logOutcome(`____[Dice Value Updated]`);
+        this.log(`____[Player enters gameplay]`);
+        this.log(`____[Dice Value Updated]`);
         diceValue -= 6;
-        this.logOutcome(`____Dice Value: ${diceValue}`);
+        this.log(`____Dice Value: ${diceValue}`);
       }
 
       let newPosition = oldPosition + diceValue;
-      this.logOutcome(`____New Position: ${newPosition}`);
+      this.log(`____New Position: ${newPosition}`);
 
       /**
        * @description If new position exceeds the board length, omit the move & move to next player
        */
       if (newPosition > this.boardRepository.boardLength) {
-        this.logOutcome(`____[New Position Exceeds Board Length]`);
-        this.logOutcome(`____Final Position: ${newPosition}`);
+        this.log(`____[New Position Exceeds Board Length]`);
+        this.log(`____Final Position: ${newPosition}`);
         continue;
       }
 
@@ -91,9 +91,9 @@ export class GameService {
       });
 
       if (newPositionBlock.getSnake()) {
-        this.logOutcome(`____[Snake Found]`);
+        this.log(`____[Snake Found]`);
         newPosition = newPositionBlock.getSnake().tail;
-        this.logOutcome(`____New Position: ${newPosition}`);
+        this.log(`____New Position: ${newPosition}`);
       }
 
       newPositionBlock = this.boardRepository.getBlock({
@@ -101,9 +101,9 @@ export class GameService {
       });
 
       if (newPositionBlock.getLadder()) {
-        this.logOutcome(`____[Ladder Found]`);
+        this.log(`____[Ladder Found]`);
         newPosition = newPositionBlock.getLadder().top;
-        this.logOutcome(`____New Position: ${newPosition}`);
+        this.log(`____New Position: ${newPosition}`);
       }
 
       newPositionBlock = this.boardRepository.getBlock({
@@ -111,33 +111,30 @@ export class GameService {
       });
 
       if (newPositionBlock.getPlayer()) {
-        this.logOutcome(`____[Player Found]`);
-        /**
-         * @todo move the existing player at newPositionBlock to 0
-         */
+        this.log(`____[Player Found]`);
+        const killedPlayer = newPositionBlock.getPlayer();
+        this.log(
+          `____[${killedPlayer.firstName} ${killedPlayer.lastName} (${killedPlayer.userName}) Overruled]`,
+        );
+        this.boardRepository.setPlayer({ position: newPosition, player: null });
+        killedPlayer.position = 0;
       }
 
-      this.logOutcome(`____Final Position: ${newPosition}`);
+      this.log(`____Final Position: ${newPosition}`);
       currPlayer.position = newPosition;
+
       this.boardRepository.setPlayer({ position: oldPosition, player: null });
       this.boardRepository.setPlayer({
         position: newPosition,
         player: currPlayer,
       });
 
-      if (
-        newPosition ===
-        this.boardRepository.boardLength /* || totalTurns > 50 */
-      ) {
-        this.logOutcome(
-          `\n*****************************************************`,
+      if (newPosition === this.boardRepository.boardLength) {
+        this.log(`\n*****************************************************`);
+        this.log(
+          ` 🏆🏆 WINNER - ${currPlayer.firstName} ${currPlayer.lastName} (${currPlayer.userName}) 🏆🏆`,
         );
-        this.logOutcome(
-          `********** 🏆🏆 WINNER - ${currPlayer.firstName} ${currPlayer.lastName} (${currPlayer.userName}) 🏆🏆**********`,
-        );
-        this.logOutcome(
-          `*****************************************************\n\n`,
-        );
+        this.log(`*****************************************************\n\n`);
         gameplay = false;
       }
     }
@@ -243,7 +240,7 @@ export class GameService {
    *
    * @description Append game play logs to log/gameplay.log file
    */
-  private logOutcome(message: string): void {
+  private log(message: string): void {
     console.log(message);
     fs.appendFileSync('log/gameplay.log', `${message}\n`);
   }
