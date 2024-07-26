@@ -48,6 +48,10 @@ export class GameService {
 
   /**
    * @description Fetch user input to initialise various entities required for snake & ladder game.
+   * @todo Add validation to ensure all positions in snakes & ladders are positive numbers ranging between [1, boardLength]
+   * @todo Add validation to ensure no 2 ladders have the same bottom position
+   * @todo Add validation to ensure no 2 snakes have the same head position
+   * @todo Add validation to ensure no position has both - a snake head & ladder bottom or vice versa
    */
   private fetchInput(): {
     boardLength: number;
@@ -114,5 +118,25 @@ export class GameService {
       ladders,
       players,
     };
+  }
+
+  private rollDice(): number {
+    /**
+     * @default if Math.random() is 0, then make it 1
+     */
+    let totalAttempts = 3;
+    let diceValue = Math.floor(Math.random() * 6) || 1;
+    totalAttempts -= 1;
+
+    while (totalAttempts > 0 && diceValue % 6 === 0) {
+      diceValue += Math.floor(Math.random() * 6) || 1;
+      totalAttempts -= 1;
+    }
+
+    if (totalAttempts === 0) {
+      diceValue = 0;
+    }
+
+    return diceValue;
   }
 }
