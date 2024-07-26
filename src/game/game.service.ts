@@ -125,7 +125,19 @@ export class GameService {
         player: currPlayer,
       });
 
-      if (newPosition === this.boardRepository.boardLength || totalTurns > 50) {
+      if (
+        newPosition ===
+        this.boardRepository.boardLength /* || totalTurns > 50 */
+      ) {
+        this.logOutcome(
+          `\n*****************************************************`,
+        );
+        this.logOutcome(
+          `********** 🏆🏆 WINNER - ${currPlayer.firstName} ${currPlayer.lastName} (${currPlayer.userName}) 🏆🏆**********`,
+        );
+        this.logOutcome(
+          `*****************************************************\n\n`,
+        );
         gameplay = false;
       }
     }

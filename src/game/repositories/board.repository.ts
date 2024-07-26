@@ -77,7 +77,7 @@ export class BoardRepository {
 
   public printBoard() {
     console.log('***** BOARD *****');
-    for (let i = 1; i < this._board.length; i += 1) {
+    for (let i = 1; i <= this.boardLength; i += 1) {
       let identifier: string = null;
       if (this._board[i].getLadder()) {
         identifier = `LADDER ${this._board[i].getLadder().bottom} -> ${this._board[i].getLadder().top}`;
@@ -92,10 +92,7 @@ export class BoardRepository {
         position = position.slice(position.length - 3);
         console.log(`| #${position} ${identifier}`);
       }
-
-      // if (i % Math.sqrt(this._board.length - 1) === 0) {
-      //   console.log();
-      // }
     }
+    console.log('***** BOARD *****');
   }
 }
