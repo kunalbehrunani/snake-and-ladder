@@ -18,10 +18,10 @@ export class Snake {
   }
 
   get head(): number {
-    return this.head;
+    return this._head;
   }
 
   get tail(): number {
-    return this.tail;
+    return this._tail;
   }
 }

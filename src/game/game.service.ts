@@ -23,8 +23,32 @@ export class GameService {
     const { boardLength, snakes, ladders, players } = this.fetchInput();
     console.log(boardLength);
     console.log(snakes, ladders, players);
+
+    /**
+     * Initialise Empty Board
+     */
+    this.boardRepository.initialiseEmptyBoard({ boardLength });
+
+    /**
+     * Set all snakes on the board
+     */
+    for (let i = 0; i < snakes.length; i += 1) {
+      this.boardRepository.setSnake({ snake: snakes[i] });
+    }
+
+    /**
+     * Set all ladders on the board
+     */
+    for (let i = 0; i < ladders.length; i += 1) {
+      this.boardRepository.setLadder({ ladder: ladders[i] });
+    }
+
+    this.boardRepository.printBoard();
   }
 
+  /**
+   * @description Fetch user input to initialise various entities required for snake & ladder game.
+   */
   private fetchInput(): {
     boardLength: number;
     snakes: Snake[];

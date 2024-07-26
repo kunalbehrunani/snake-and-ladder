@@ -13,25 +13,40 @@ export class BoardRepository {
     }
   }
 
-  public setSnake(param: { position: number; snake: Snake }): void {
-    if (param.position <= 0 || param.position > this._board.length) {
-      throw new Error('Error: Invalid position on board to set snake');
-    }
-    const block = this._board[param.position];
+  /**
+   * @description snake will always be set at its head position on the board.
+   *
+   */
+  public setSnake(param: { snake: Snake }): void {
+    const headPosition = param.snake.head;
 
-    if (block.getLadder() || block.getSnake) {
-      throw new Error('Error: Only 1 ladder or snake can exist in a block');
+    if (headPosition > this._board.length) {
+      throw new Error('Error: Snake position exceeds board length');
+    }
+
+    const block: Block = this._board[headPosition];
+
+    if (block.getLadder() || block.getSnake()) {
+      throw new Error(
+        'Error: Only 1 ladder or snake can exist at a block in the board',
+      );
     }
 
     block.setSnake(param.snake);
     return;
   }
 
-  public setLadder(param: { position: number; ladder: Ladder }): void {
-    if (param.position <= 0 || param.position > this._board.length) {
-      throw new Error('Error: Invalid position on board to set ladder');
+  /**
+   * @description ladder will always be set at its bottom position on the board.
+   */
+  public setLadder(param: { ladder: Ladder }): void {
+    const bottomPosition = param.ladder.bottom;
+
+    if (bottomPosition > this._board.length) {
+      throw new Error('Error: Ladder position exceeds board length');
     }
-    const block = this._board[param.position];
+
+    const block: Block = this._board[bottomPosition];
 
     if (block.getLadder() || block.getSnake()) {
       throw new Error('Error: Only 1 ladder or snake can exist in a block');
@@ -43,7 +58,7 @@ export class BoardRepository {
 
   public printBoard() {
     for (let i = 1; i < this._board.length; i += 1) {
-      let identifier = '    ';
+      let identifier = '        ';
       if (this._board[i].getLadder()) {
         identifier = `L_${this._board[i].getLadder().bottom}_${this._board[i].getLadder().top}`;
       } else if (this._board[i].getSnake()) {
