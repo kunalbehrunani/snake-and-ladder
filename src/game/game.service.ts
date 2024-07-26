@@ -20,13 +20,12 @@ export class GameService {
   ) {}
 
   public startGame() {
+    this.clearLogFile();
+
     const { boardLength, snakes, ladders, players } = this.fetchInput();
     console.log(boardLength);
     console.log(snakes, ladders, players);
 
-    /**
-     * Initialise Empty Board
-     */
     this.boardRepository.initialiseEmptyBoard({ boardLength });
 
     /**
@@ -41,6 +40,94 @@ export class GameService {
      */
     for (let i = 0; i < ladders.length; i += 1) {
       this.boardRepository.setLadder({ ladder: ladders[i] });
+    }
+
+    /**
+     * @default all players are set to position 0 and not marked on the board
+     */
+
+    let gameplay: boolean = true;
+    let totalTurns = 0;
+
+    while (gameplay) {
+      totalTurns += 1;
+      this.logOutcome(`Turn #${totalTurns}`);
+
+      const currPlayer = this.playerRepository.getNextPlayer();
+      const oldPosition = currPlayer.position;
+      let diceValue = this.rollDice();
+      this.logOutcome(
+        `____Player: ${currPlayer.userName}\n____Old Position: ${oldPosition}\n____Dice Value: ${diceValue}`,
+      );
+
+      /**
+       * @description A player needs to get a diceValue of 6 & above in order to enter the gameplay
+       */
+      if (oldPosition === 0 && diceValue < 6) {
+        this.logOutcome(`____[Player yet to enter gameplay]`);
+        this.logOutcome(`____Final Position: ${0}`);
+        continue;
+      } else if (oldPosition === 0 && diceValue >= 6) {
+        this.logOutcome(`____[Player enters gameplay]`);
+        this.logOutcome(`____[Dice Value Updated]`);
+        diceValue -= 6;
+        this.logOutcome(`____Dice Value: ${diceValue}`);
+      }
+
+      let newPosition = oldPosition + diceValue;
+      this.logOutcome(`____New Position: ${newPosition}`);
+
+      /**
+       * @description If new position exceeds the board length, omit the move & move to next player
+       */
+      if (newPosition > this.boardRepository.boardLength) {
+        this.logOutcome(`____[New Position Exceeds Board Length]`);
+        this.logOutcome(`____Final Position: ${newPosition}`);
+        continue;
+      }
+
+      let newPositionBlock = this.boardRepository.getBlock({
+        position: newPosition,
+      });
+
+      if (newPositionBlock.getSnake()) {
+        this.logOutcome(`____[Snake Found]`);
+        newPosition = newPositionBlock.getSnake().tail;
+        this.logOutcome(`____New Position: ${newPosition}`);
+      }
+
+      newPositionBlock = this.boardRepository.getBlock({
+        position: newPosition,
+      });
+
+      if (newPositionBlock.getLadder()) {
+        this.logOutcome(`____[Ladder Found]`);
+        newPosition = newPositionBlock.getLadder().top;
+        this.logOutcome(`____New Position: ${newPosition}`);
+      }
+
+      newPositionBlock = this.boardRepository.getBlock({
+        position: newPosition,
+      });
+
+      if (newPositionBlock.getPlayer()) {
+        this.logOutcome(`____[Player Found]`);
+        /**
+         * @todo move the existing player at newPositionBlock to 0
+         */
+      }
+
+      this.logOutcome(`____Final Position: ${newPosition}`);
+      currPlayer.position = newPosition;
+      this.boardRepository.setPlayer({ position: oldPosition, player: null });
+      this.boardRepository.setPlayer({
+        position: newPosition,
+        player: currPlayer,
+      });
+
+      if (newPosition === this.boardRepository.boardLength || totalTurns > 50) {
+        gameplay = false;
+      }
     }
 
     this.boardRepository.printBoard();
@@ -125,11 +212,11 @@ export class GameService {
      * @default if Math.random() is 0, then make it 1
      */
     let totalAttempts = 3;
-    let diceValue = Math.floor(Math.random() * 6) || 1;
+    let diceValue = Math.floor(Math.random() * 7) || 1;
     totalAttempts -= 1;
 
     while (totalAttempts > 0 && diceValue % 6 === 0) {
-      diceValue += Math.floor(Math.random() * 6) || 1;
+      diceValue += Math.floor(Math.random() * 7) || 1;
       totalAttempts -= 1;
     }
 
@@ -138,5 +225,21 @@ export class GameService {
     }
 
     return diceValue;
+  }
+
+  /**
+   *
+   * @description Append game play logs to log/gameplay.log file
+   */
+  private logOutcome(message: string): void {
+    console.log(message);
+    fs.appendFileSync('log/gameplay.log', `${message}\n`);
+  }
+
+  /**
+   * @description clear the existing logs before starting a new game
+   */
+  private clearLogFile() {
+    fs.writeFileSync('log/gameplay.log', '');
   }
 }

@@ -15,7 +15,7 @@ export class Block {
     this._ladder = null;
   }
 
-  public setPlayer(player: Player) {
+  public setPlayer(player: Player | null) {
     this._player = player;
   }
 

@@ -1,12 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { Block } from '../schemas/block.schema';
 import { Ladder } from '../schemas/ladder.schema';
+import { Player } from '../schemas/player.schema';
 import { Snake } from '../schemas/snake.schema';
 
 @Injectable()
 export class BoardRepository {
   private _board: Block[] = [new Block(0)];
 
+  public get boardLength() {
+    return this._board.length - 1;
+  }
+
+  /**
+   * @description Initialise empty board of size boardlength
+   */
   public initialiseEmptyBoard(param: { boardLength: number }): void {
     for (let i = 0; i < param.boardLength; i += 1) {
       this._board.push(new Block(i));
@@ -56,22 +64,38 @@ export class BoardRepository {
     return;
   }
 
+  public getBlock(param: { position: number }): Block {
+    if (param.position > this.boardLength) {
+      throw new Error('Error: position exceeds board length.');
+    }
+    return this._board[param.position];
+  }
+
+  public setPlayer(param: { position: number; player: Player | null }): void {
+    this._board[param.position].setPlayer(param.player);
+  }
+
   public printBoard() {
+    console.log('***** BOARD *****');
     for (let i = 1; i < this._board.length; i += 1) {
-      let identifier = '        ';
+      let identifier: string = null;
       if (this._board[i].getLadder()) {
-        identifier = `L_${this._board[i].getLadder().bottom}_${this._board[i].getLadder().top}`;
+        identifier = `LADDER ${this._board[i].getLadder().bottom} -> ${this._board[i].getLadder().top}`;
       } else if (this._board[i].getSnake()) {
-        identifier = `S_${this._board[i].getSnake().head}_${this._board[i].getSnake().tail}`;
+        identifier = `SNAKE ${this._board[i].getSnake().head} -> ${this._board[i].getSnake().tail}`;
       } else if (this._board[i].getPlayer()) {
-        identifier = `P_${this._board[i].getPlayer().userName}`;
+        identifier = `PLAYER ${this._board[i].getPlayer().userName}`;
       }
 
-      console.log(`| ${i} ${identifier} |`);
-
-      if (i % Math.sqrt(this._board.length - 1) === 0) {
-        console.log();
+      if (identifier) {
+        let position = '0000' + i.toString();
+        position = position.slice(position.length - 3);
+        console.log(`| #${position} ${identifier}`);
       }
+
+      // if (i % Math.sqrt(this._board.length - 1) === 0) {
+      //   console.log();
+      // }
     }
   }
 }
