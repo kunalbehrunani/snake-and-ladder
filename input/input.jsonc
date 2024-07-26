@@ -16,6 +16,9 @@
   "snakes": [
     { "head": 37, "tail": 2 },
     { "head": 48, "tail": 16 },
+    { "head": 28, "tail": 10 },
+    { "head": 75, "tail": 32 },
+    { "head": 94, "tail": 71 },
     { "head": 96, "tail": 42 },
   ],
 
@@ -30,7 +33,10 @@
    */
   "ladders": [
     { "bottom": 4, "top": 56 },
-    { "bottom": 12, "top": 36 },
+    { "bottom": 12, "top": 50 },
+    { "bottom": 14, "top": 55 },
+    { "bottom": 22, "top": 58 },
+    { "bottom": 41, "top": 79 },
     { "bottom": 54, "top": 88 },
   ],
 
@@ -40,7 +46,10 @@
    * Each object in the array has to contain 2 values representing the first name & the last name of a respective player.
    */
   "players": [
-    { "firstName": "Player", "lastName": "1" },
-    { "firstName": "Player", "lastName": "2" },
+    { "firstName": "Harry", "lastName": "Potter" },
+    { "firstName": "Hermione", "lastName": "Granger" },
+    { "firstName": "Ron", "lastName": "Weasley" },
+    { "firstName": "Luna", "lastName": "Lovegood" },
+    { "firstName": "Neville", "lastName": "Longbottom" },
   ],
 }
