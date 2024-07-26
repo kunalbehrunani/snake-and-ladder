@@ -3,7 +3,15 @@ import { Ladder } from '../schemas/ladder.schema';
 
 @Injectable()
 export class LadderRepository {
-  createNewLadder(param: { head: number; tail: number; name: string }): Ladder {
-    return new Ladder(param.head, param.tail, param.name);
+  private _ladders: Ladder[] = [];
+
+  createNewLadder(param: {
+    bottom: number;
+    top: number;
+    name: string;
+  }): Ladder {
+    const ladder = new Ladder(param.bottom, param.top, param.name);
+    this._ladders.push(ladder);
+    return ladder;
   }
 }

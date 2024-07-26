@@ -37,12 +37,10 @@
   /*
    * The number of players in the game.
    *
-   * Each object in the array has to contain 3 values representing the first name, last name & the user name a respective player.
-   *
-   * Ensure no two players have any common username.
+   * Each object in the array has to contain 2 values representing the first name & the last name of a respective player.
    */
   "players": [
-    { "firstName": "Player", "lastName": "1", "userName": "P1" },
-    { "firstName": "Player", "lastName": "2", "userName": "P2" },
+    { "firstName": "Player", "lastName": "1" },
+    { "firstName": "Player", "lastName": "2" },
   ],
 }

@@ -7,6 +7,21 @@ export class Snake {
     this._head = head;
     this._tail = tail;
     this._name = name;
+
+    if (head <= tail) {
+      throw new Error(
+        'Error: Input Validation Failed. Snake parameters are invalid.',
+      );
+    }
+
     return;
+  }
+
+  get head(): number {
+    return this.head;
+  }
+
+  get tail(): number {
+    return this.tail;
   }
 }

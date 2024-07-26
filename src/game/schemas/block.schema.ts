@@ -19,7 +19,7 @@ export class Block {
     this._player = player;
   }
 
-  public getPlayer() {
+  public getPlayer(): Player {
     return this._player;
   }
 
@@ -27,7 +27,7 @@ export class Block {
     this._snake = snake;
   }
 
-  public getSnake() {
+  public getSnake(): Snake {
     return this._snake;
   }
 
@@ -35,7 +35,7 @@ export class Block {
     this._ladder = ladder;
   }
 
-  public getLadder() {
+  public getLadder(): Ladder {
     return this._ladder;
   }
 }

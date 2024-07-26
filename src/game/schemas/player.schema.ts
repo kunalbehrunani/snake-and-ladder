@@ -9,4 +9,16 @@ export class Player {
     this._userName = userName;
     return;
   }
+
+  get userName(): string {
+    return this._userName;
+  }
+
+  get firstName(): string {
+    return this._firstName;
+  }
+
+  get lastName(): string {
+    return this._lastName;
+  }
 }
