@@ -19,6 +19,9 @@ export class GameService {
     private readonly boardRepository: BoardRepository,
   ) {}
 
+  /**
+   * @description Start the snake and ladder gameplay
+   */
   public startGame() {
     this.clearLogFile();
 
@@ -57,6 +60,7 @@ export class GameService {
       const currPlayer = this.playerRepository.getNextPlayer();
       const oldPosition = currPlayer.position;
       let diceValue = this.rollDice();
+
       this.log(
         `____Player: ${currPlayer.userName}\n____Old Position: ${oldPosition}\n____Dice Value: ${diceValue}`,
       );
@@ -122,12 +126,12 @@ export class GameService {
 
       if (newPositionBlock.getPlayer()) {
         this.log(`____[Player Found]`);
-        const killedPlayer = newPositionBlock.getPlayer();
+        const overruledPlayer = newPositionBlock.getPlayer();
         this.log(
-          `____[${killedPlayer.firstName} ${killedPlayer.lastName} (${killedPlayer.userName}) Overruled]`,
+          `____[${overruledPlayer.firstName} ${overruledPlayer.lastName} (${overruledPlayer.userName}) Overruled]`,
         );
         this.boardRepository.setPlayer({ position: newPosition, player: null });
-        killedPlayer.position = 0;
+        overruledPlayer.position = 0;
       }
 
       this.log(`____Final Position: ${newPosition}`);

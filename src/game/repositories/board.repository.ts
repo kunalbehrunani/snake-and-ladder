@@ -23,7 +23,7 @@ export class BoardRepository {
   }
 
   /**
-   * @description snake will always be set at its head position on the board.
+   * @description set snake on its head position on the  board.
    */
   public setSnake(param: { snake: Snake }): void {
     const headPosition = param.snake.head;
