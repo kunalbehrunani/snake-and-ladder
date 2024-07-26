@@ -1,0 +1,48 @@
+{
+  /*
+   * Length of the game board
+   */
+  "boardLength": 100,
+
+  /*
+   * The number of snakes in the board.
+   *
+   * Each object in the array has to contain 2 values representing the position of the head and the tail of a respective snake.
+   *
+   * Ensure no two snakes have any common head or a tail.
+   *
+   * Ensure numerical value of the head is always greater than numerical value of the tail.
+   */
+  "snakes": [
+    { "head": 37, "tail": 2 },
+    { "head": 48, "tail": 16 },
+    { "head": 96, "tail": 42 },
+  ],
+
+  /*
+   * The number of ladders in the board.
+   *
+   * Each object in the array has to contain 2 values representing the position of the bottom and the top of a respective ladder.
+   *
+   * Ensure no two ladders have any common bottom or a top.
+   *
+   * Ensure numerical value of the top is always greater than numerical value of the bottom.
+   */
+  "ladders": [
+    { "bottom": 4, "top": 56 },
+    { "bottom": 12, "top": 36 },
+    { "bottom": 54, "top": 88 },
+  ],
+
+  /*
+   * The number of players in the game.
+   *
+   * Each object in the array has to contain 3 values representing the first name, last name & the user name a respective player.
+   *
+   * Ensure no two players have any common username.
+   */
+  "players": [
+    { "firstName": "Player", "lastName": "1", "userName": "P1" },
+    { "firstName": "Player", "lastName": "2", "userName": "P2" },
+  ],
+}
