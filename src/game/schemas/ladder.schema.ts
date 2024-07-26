@@ -8,7 +8,7 @@ export class Ladder {
     this._top = top;
     this._name = name;
 
-    if (top <= bottom) {
+    if (top <= 0 || bottom < 0 || top <= bottom) {
       throw new Error(
         'Error: Input Validation Failed. Ladder parameters are invalid.',
       );
