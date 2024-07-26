@@ -48,6 +48,7 @@ export class GameService {
 
     let gameplay: boolean = true;
     let totalTurns = 0;
+    this.boardRepository.logBoard({ totalTurns });
 
     while (gameplay) {
       totalTurns += 1;
@@ -66,12 +67,20 @@ export class GameService {
       if (oldPosition === 0 && diceValue < 6) {
         this.log(`____[Player yet to enter gameplay]`);
         this.log(`____Final Position: ${0}`);
+        this.boardRepository.logBoard({ totalTurns });
         continue;
       } else if (oldPosition === 0 && diceValue >= 6) {
         this.log(`____[Player enters gameplay]`);
         this.log(`____[Dice Value Updated]`);
         diceValue -= 6;
         this.log(`____Dice Value: ${diceValue}`);
+      }
+
+      if (diceValue === 0) {
+        this.log(`____[Turn Omitted]`);
+        this.log(`____Final Position: ${oldPosition}`);
+        this.boardRepository.logBoard({ totalTurns });
+        continue;
       }
 
       let newPosition = oldPosition + diceValue;
@@ -83,6 +92,7 @@ export class GameService {
       if (newPosition > this.boardRepository.boardLength) {
         this.log(`____[New Position Exceeds Board Length]`);
         this.log(`____Final Position: ${newPosition}`);
+        this.boardRepository.logBoard({ totalTurns });
         continue;
       }
 
@@ -128,6 +138,7 @@ export class GameService {
         position: newPosition,
         player: currPlayer,
       });
+      this.boardRepository.logBoard({ totalTurns });
 
       if (newPosition === this.boardRepository.boardLength) {
         this.log(`\n*****************************************************`);
@@ -138,8 +149,6 @@ export class GameService {
         gameplay = false;
       }
     }
-
-    this.boardRepository.printBoard();
   }
 
   /**
@@ -246,9 +255,16 @@ export class GameService {
   }
 
   /**
-   * @description clear the existing logs before starting a new game
+   * @description clear the existing logs before starting a new game or create log directory if not exists.
    */
   private clearLogFile() {
-    fs.writeFileSync('log/gameplay.log', '');
+    try {
+      fs.writeFileSync('log/gameplay.log', '');
+      fs.writeFileSync('log/board.log', '');
+    } catch (err) {
+      if (fs.existsSync('log/gameplay.log') === false) {
+        fs.mkdirSync('log');
+      }
+    }
   }
 }

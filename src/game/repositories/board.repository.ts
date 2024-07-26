@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as fs from 'fs';
 import { Block } from '../schemas/block.schema';
 import { Ladder } from '../schemas/ladder.schema';
 import { Player } from '../schemas/player.schema';
@@ -93,6 +94,30 @@ export class BoardRepository {
         console.log(`| #${position} ${identifier}`);
       }
     }
+    console.log('***** BOARD *****');
+  }
+
+  public logBoard(param: { totalTurns: number }) {
+    let log: string = `Turn #${param.totalTurns}\n`;
+
+    for (let i = 1; i <= this.boardLength; i += 1) {
+      let identifier: string = null;
+      if (this._board[i].getLadder()) {
+        identifier = `LADDER ${this._board[i].getLadder().bottom} -> ${this._board[i].getLadder().top}`;
+      } else if (this._board[i].getSnake()) {
+        identifier = `SNAKE ${this._board[i].getSnake().head} -> ${this._board[i].getSnake().tail}`;
+      } else if (this._board[i].getPlayer()) {
+        identifier = `PLAYER ${this._board[i].getPlayer().firstName} ${this._board[i].getPlayer().lastName} (${this._board[i].getPlayer().userName})`;
+      }
+
+      if (identifier) {
+        let position = '0000' + i.toString();
+        position = position.slice(position.length - 3);
+        log += `____#${position} ${identifier}\n`;
+        console.log(`| #${position} ${identifier}`);
+      }
+    }
+    fs.appendFileSync('log/board.log', log);
     console.log('***** BOARD *****');
   }
 }
